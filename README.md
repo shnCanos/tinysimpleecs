@@ -1,5 +1,9 @@
+
+# tinysimpleecs
+
+My first attempt at both writing an ecs engine and zig.
+
 <!--toc:start-->
-- [tinysimpleecs](#tinysimpleecs)
 - [Install](#install)
 - [Usage](#usage)
   - [Starting the world](#starting-the-world)
@@ -9,10 +13,6 @@
   - [Events](#events)
   - [Resources](#resources)
 <!--toc:end-->
-
-# tinysimpleecs
-
-My first attempt at both writing an ecs engine and zig.
 
 # Install
 
