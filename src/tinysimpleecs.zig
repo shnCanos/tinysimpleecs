@@ -528,14 +528,20 @@ pub fn ComponentSet(comptime components_manager: ComponentsManager) type {
 
 pub fn EntityInfo(comptime components_manager: ComponentsManager) type {
     return struct {
+        const Self = @This();
         entity: Entity,
         component_set: ComponentSet(components_manager),
+
+        pub fn deinit(self: *Self) void {
+            self.component_set.deinit();
+        }
     };
 }
 
 const EntityManagerError = error{
     EntityDoesNotExist,
 };
+
 pub fn EntityManager(comptime components_manager: ComponentsManager) type {
     return struct {
         const Self = @This();
@@ -577,7 +583,8 @@ pub fn EntityManager(comptime components_manager: ComponentsManager) type {
 
         pub fn removeEntity(self: *Self, entity: Entity) !void {
             if (self.entityIndex(entity)) |index| {
-                _ = self.entities.swapRemove(index);
+                var ent = self.entities.swapRemove(index);
+                ent.deinit();
                 return;
             }
 
