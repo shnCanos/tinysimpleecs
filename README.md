@@ -1,6 +1,18 @@
+<!--toc:start-->
+- [tinysimpleecs](#tinysimpleecs)
+- [Install](#install)
+- [Usage](#usage)
+  - [Starting the world](#starting-the-world)
+  - [Running systems](#running-systems)
+  - [Creating a Component](#creating-a-component)
+  - [Creating a System (from the example)](#creating-a-system-from-the-example)
+  - [Events](#events)
+  - [Resources](#resources)
+<!--toc:end-->
+
 # tinysimpleecs
 
-My first attempt at both writing an ecs engine and zig. Note that it is pretty simplistic in implementation and likely has bugs.
+My first attempt at both writing an ecs engine and zig.
 
 # Install
 
@@ -23,7 +35,7 @@ You will then be able to import it with:
 const ecs = @import("tinysimpleecs");
 ```
 
-You can find an example [here](https://github.com/shnCanos/tinysimpleecs/tree/main/example)
+You can find an example [here](https://github.com/shnCanos/tinysimpleecs/tree/main/example).
 # Usage
 
 ## Starting the world
@@ -40,7 +52,7 @@ defer world.deinit();
 
 ## Running systems
 
-Systems are run with the following syntax.
+Systems are run with the following syntax:
 
 ```zig
 while (!shouldFinish) {
