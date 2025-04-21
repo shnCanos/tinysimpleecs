@@ -38,7 +38,7 @@
     .dependencies = .{
         .tinysimpleecs = .{
             .url = "https://github.com/shnCanos/tinysimpleecs/archive/refs/heads/main.tar.gz",
-            .hash = "tinysimpleecs-0.0.1-AAAAABJtAAD_8e_ctSfGYScJ332BJutqpNkcVjNTuApn",
+            .hash = "tinysimpleecs-0.0.1-MP61y9xtAACIyh-Ah0OLtYgYOCsYMm0rVIWHDGGdkWCT",
         },
         .raylib_zig = .{
             .url = "git+https://github.com/Not-Nik/raylib-zig?ref=devel#0de5f8aed0565f2dbd8bc6851499c85df9e73534",
