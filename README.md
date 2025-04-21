@@ -1,7 +1,7 @@
 
 # tinysimpleecs
 
-My first attempt at both writing an ecs engine and zig.
+A tiny simple ECS engine written in zig.
 
 <!--toc:start-->
 - [Install](#install)
