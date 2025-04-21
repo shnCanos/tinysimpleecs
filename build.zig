@@ -4,6 +4,8 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    _ = b.addModule("tinysimpleecs", .{ .root_source_file = b.path("src/tinysimpleecs.zig") });
+
     const lib_mod = b.createModule(.{
         .root_source_file = b.path("src/tinysimpleecs.zig"),
         .target = target,
