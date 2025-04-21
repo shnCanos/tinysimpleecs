@@ -7,4 +7,5 @@
         "src",
         ".gitignore",
     },
+    .fingerprint = 0xb60ffd55cbb5fe30,
 }
