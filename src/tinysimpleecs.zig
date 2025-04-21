@@ -163,8 +163,8 @@ pub fn BitMask(comptime component_n: usize) type {
 pub fn SystemsManager(comptime sys: anytype) type {
     return struct {
         const Self = @This();
-        const update_systems = sys.update;
-        const startup_systems = sys.startup;
+        const update_systems = if (@hasField(@TypeOf(sys), "update")) sys.update else .{};
+        const startup_systems = if (@hasField(@TypeOf(sys), "startup")) sys.startup else .{};
 
         // TODO: Run startup sytems or something
         pub fn init(allocator: Allocator, entity_manager: anytype, components_manager: ComponentsManager) !Self {
@@ -511,12 +511,12 @@ pub fn ComponentSet(comptime components_manager: ComponentsManager) type {
             const EnumType = components_manager.GetTableEnum();
             const enum_field_count = std.meta.fields(EnumType).len;
             comptime var mask_index = 0;
-            comptime var comp_index = 0;
+            var comp_index: usize = 0;
             inline while (mask_index < enum_field_count) : (mask_index += 1) {
                 if (self.bitmask.set.isSet(mask_index)) {
                     defer comp_index += 1;
                     const current_tag: EnumType = @enumFromInt(mask_index);
-                    const current_value = @field(components_manager.table_union_type, @tagName(current_tag));
+                    const current_value = @field(self.components[comp_index], @tagName(current_tag));
                     self.alloc.destroy(current_value);
                 }
             }
@@ -648,28 +648,32 @@ pub fn World(comptime all_components: anytype, systems: anytype) type {
         pub fn runSystems(self: *Self) !void {
             try self.systems.runAllUpdate(self.alloc, self.entity_manager, components_manager);
         }
-
-        // pub fn query_world(self: *Self, comptime query: anytype) void {}
     };
 }
 
-test "Component bitmasks" {
-    const Banana = struct {};
-    const NotBanana = struct { i: usize };
-    var world = World(.{ Banana, NotBanana }, .{}).init(std.testing.allocator);
-    try std.testing.expectEqual(0, world.getComponentBitmask(Banana));
-    try std.testing.expectEqual(1, world.getComponentBitmask(NotBanana));
-}
-
-test "Adding and Querying entities" {
+test "Adding, Querying and Despawning entities" {
     const Banana = struct {};
     const NotBanana = struct { i: usize };
     const NotBanana2 = struct {};
-    const allocator = std.testing.allocator;
-    var world = World(.{ Banana, NotBanana, NotBanana2 }, .{}).init(allocator);
+
+    const SysStruct = struct {
+        fn spawnStuff(spawner1: *Spawn(.{ Banana, NotBanana }), spawner2: *Spawn(.{NotBanana})) !void {
+            try spawner1.spawn(.{ Banana{}, NotBanana{ .i = 32 } });
+            try spawner2.spawn(.{NotBanana{ .i = 13 }});
+        }
+
+        fn despawnStuff(despawner: *Despawn, query: Query(.{ .ent = Entity, ._ = NotBanana })) !void {
+            for (query.result.items) |result| {
+                try despawner.despawn(result.ent);
+            }
+        }
+    };
+
+    var world = try World(.{ Banana, NotBanana, NotBanana2 }, .{
+        .startup = .{SysStruct.spawnStuff},
+        .update = .{SysStruct.despawnStuff},
+    }).init(std.testing.allocator);
     defer world.deinit();
-    try world.add_entity(.{ Banana{}, NotBanana{ .i = 32 } });
-    try world.add_entity(.{NotBanana{ .i = 13 }});
-    var query_result = try Query(.{NotBanana}).init(allocator, world.entityManager, ComponentsManager.init(.{ Banana, NotBanana, NotBanana2 }));
-    defer query_result.deinit();
+
+    try world.runSystems();
 }
