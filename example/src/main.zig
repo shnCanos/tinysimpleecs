@@ -123,6 +123,7 @@ pub fn main() anyerror!void {
         .startup = .{spawnEntities},
         .update = .{ movement, drawCircles, destroyOnContact },
     }).init(allocator);
+    defer world.deinit();
 
     rl.initWindow(screenWidth, screenHeight, "My cool cool window!");
     defer rl.closeWindow(); // Close window and OpenGL context
