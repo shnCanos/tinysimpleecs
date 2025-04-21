@@ -1,6 +1,5 @@
 const lib = @import("first_raylib_zig_lib");
 const std = @import("std");
-const pretty = @import("pretty");
 
 const Allocator = std.mem.Allocator;
 
@@ -630,32 +629,6 @@ pub fn World(comptime all_components: anytype, systems: anytype) type {
             return components_manager.getComponentPos(component);
         }
 
-        pub fn printAll(self: *const Self) !void {
-            try self.printEntities();
-            self.printComponents();
-        }
-
-        pub fn printComponents(_: *const Self) void {
-            std.debug.print("Components:\n", .{});
-            inline for (@typeInfo(components_manager.GetTableEnum()).@"enum".fields) |f| {
-                std.debug.print("  - {s} (id: {d})\n", .{ f.name, f.value });
-            }
-        }
-
-        pub fn printEntities(self: *const Self) !void {
-            std.debug.print("Entities:\n", .{});
-            for (self.entity_manager.entities.items) |entity| {
-                std.debug.print("  - {d}: \n    - ", .{entity.entity.id});
-                entity.component_set.bitmask.print();
-                std.debug.print("\n", .{});
-                for (entity.component_set.components, 0..entity.component_set.components_len) |component, _| {
-                    try pretty.print(self.alloc, component, .{ .fmt = "    - {s}\n", .inline_mode = true, .filter_field_names = .{
-                        .exclude = &.{ "alloc", "allocator" },
-                    } });
-                }
-            }
-        }
-
         pub fn addEntity(self: *Self, comptime components: anytype) !void {
             try self.entity_manager.addEntity(components);
         }
@@ -663,13 +636,6 @@ pub fn World(comptime all_components: anytype, systems: anytype) type {
         pub fn deinit(self: *Self) void {
             self.entity_manager.deinit();
             self.alloc.destroy(self.entity_manager);
-        }
-
-        pub fn printWithPretty(self: Self) !void {
-            try pretty.print(self.alloc, self, .{ .filter_field_names = .{
-                .exclude = &.{ "alloc", "allocator" },
-            } });
-            try pretty.print(self.alloc, components_manager, .{});
         }
 
         pub fn runSystems(self: *Self) !void {
