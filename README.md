@@ -71,7 +71,7 @@ query: ecs.Query(.{ .ent = ecs.Entity, .c = Circle, .pos = Position })
 Will return every entity that contains the `Circle` and `Position` components.
 
 >[!TIP]
-> You can query `ecs.Entity` from any `entity`
+> You can query `ecs.Entity` from any `entity`. It is a special "component" that's not returned as a pointer.
 
 A `Spawner` can spawn entities with the specified components. For instance:
 
