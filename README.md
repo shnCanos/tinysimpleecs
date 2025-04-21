@@ -157,6 +157,3 @@ In order to create an Event, you can add it as a component, spawn it in the emit
 ## Resources
 
 In order to create a resource you can simply spawn it in a startup system and query it in any system that uses it.
-
-# Licence
-MIT
